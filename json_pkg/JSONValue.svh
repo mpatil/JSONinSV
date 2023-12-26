@@ -42,7 +42,7 @@ class JSONValue;
     static const string null_literal = "null";
     static const string true_literal = "true";
     static const string false_literal = "false";
-    
+
     // internal properties
     protected JSONValue this_object[string];
     protected JSONValue this_array[$];
@@ -352,7 +352,7 @@ function JSONStatus JSONValue::parseObject (
         end
         val = new(this_depth+1);
         ret = parseStringLiteral(jc, this_key);
-        this.addMemberToObject(this_key, val);
+        this.addMemberToObject(this_key.substr(0, this_key.len()-1), val);
         if (ret != PARSE_OK) begin
             break;
         end
@@ -405,7 +405,7 @@ function void JSONValue::setString (
     string str
 );
     this_type = JSON_STRING;
-    this_string = str;
+    this_string = str.substr(0, str.len()-1);
 endfunction
 
 function void JSONValue::setObject ();
@@ -460,14 +460,14 @@ function JSONValue JSONValue::createMemberOfObject (
         JSON_TRUE: jv.setTrue();
         JSON_FALSE: jv.setFalse();
         JSON_NUMBER: jv.setNumber(0.0);
-        JSON_STRING: jv.setString("<defalut_string>");
+        JSON_STRING: jv.setString("<default_string>");
         JSON_ARRAY: jv.setArray();
         JSON_OBJECT: jv.setObject();
         default: begin
             `JSON_FATAL("Error type!!")
         end
     endcase
-    this.addMemberToObject(key, jv);
+    this.addMemberToObject(key.substr(0, key.len()-1), jv);
     return jv;
 endfunction
 
@@ -480,7 +480,7 @@ function JSONValue JSONValue::createValueOfArray (
         JSON_TRUE: jv.setTrue();
         JSON_FALSE: jv.setFalse();
         JSON_NUMBER: jv.setNumber(0.0);
-        JSON_STRING: jv.setString("<defalut_string>");
+        JSON_STRING: jv.setString("<default_string>");
         JSON_ARRAY: jv.setArray();
         JSON_OBJECT: jv.setObject();
         default: begin
